@@ -1,9 +1,9 @@
-// vite.config.js (The correct version)
+// vite.config.js (The required change)
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  // ✅ CORRECT: Must be the repository name, surrounded by slashes.
-  base: '/Career_Trial_Local/', 
+  // 🎯 Must match the GitHub repository name
+  base: '/Career_Trial_Local/',
 })
