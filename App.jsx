@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, ExternalLink, User, Sun, Moon, X, Send } from "lucide-react"; 
-// Tailwind CSS classes are used for styling.
+import { ChevronDown, ExternalLink, User, Sun, Moon } from "lucide-react"; 
+// Note: X and Send icons were removed as they were only used in the deleted ContactRequestForm
 
 // --- Helper Components ---
 
@@ -47,153 +47,7 @@ const ToggleSection = ({ title, defaultOpen = true, children, className = "", th
   );
 };
 
-// ContactRequestForm Component
-const ContactRequestForm = ({ onClose, theme, isDark, primaryColor, secondaryColor, borderClass }) => {
-    const [formState, setFormState] = useState({ name: '', email: '', message: '' });
-    const [isSubmitted, setIsSubmitted] = useState(false);
-
-    // Dynamic classes
-    const formBg = isDark ? 'bg-[#1b253b]' : 'bg-white';
-    const inputBorder = isDark ? 'border-gray-600 focus:border-[#96a9d1]' : 'border-gray-300 focus:border-blue-600';
-    const inputColor = isDark ? 'text-gray-100' : 'text-gray-900';
-    const labelColor = isDark ? 'text-gray-300' : 'text-gray-700';
-    // FIX: Define the full focus ring class statically for Tailwind Purge to work
-    const focusRingClass = isDark ? 'focus:ring-[#96a9d1]' : 'focus:ring-blue-600';
-
-
-    const handleChange = (e) => {
-        setFormState({ ...formState, [e.target.name]: e.target.value });
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // Simple validation
-        if (formState.name && formState.email && formState.message) {
-            // In a real application, you would send this data to a server here.
-            console.log("Contact Request Submitted:", formState);
-            setIsSubmitted(true);
-            
-            // Optionally close the form after a delay
-            setTimeout(() => {
-                onClose();
-            }, 3000);
-        } else {
-            // Simple visual feedback for incomplete form
-            console.error('Form incomplete');
-        }
-    };
-    
-    return (
-        <div 
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
-            onClick={onClose} // Close on backdrop click
-        >
-            <motion.div 
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                className={`w-full max-w-lg p-6 sm:p-8 rounded-2xl shadow-2xl relative ${formBg} border ${borderClass}`}
-                onClick={e => e.stopPropagation()} // Prevent closing when clicking inside the form
-            >
-                {/* Close Button */}
-                <button 
-                    onClick={onClose}
-                    className={`absolute top-4 right-4 p-2 rounded-full transition-colors 
-                        ${isDark ? 'text-gray-400 hover:text-white hover:bg-gray-700' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'}`}
-                    aria-label="Close form"
-                >
-                    <X className="w-5 h-5" />
-                </button>
-
-                {/* TITLE */}
-                <h3 className={`text-2xl font-bold mb-6 ${primaryColor}`}>Professional Inquiry Form</h3>
-                
-                {/* REVISED INTRODUCTORY PARAGRAPH */}
-                <p className={`mb-6 text-sm ${labelColor}`}>
-                    This form is for detailed professional inquiries, such as discussing a <strong>job opportunity</strong>, research collaboration, or to schedule a call to discuss a specific opportunity.
-                </p>
-
-                {isSubmitted ? (
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="flex flex-col items-center justify-center h-48 text-center"
-                    >
-                        <Send className={`w-10 h-10 ${secondaryColor} mb-3`} />
-                        <h4 className={`text-xl font-semibold ${primaryColor} mb-2`}>Inquiry Sent!</h4>
-                        <p className={labelColor}>
-                            Thank you for your interest. I will respond to your email as soon as possible.
-                        </p>
-                    </motion.div>
-                ) : (
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        {/* Name Field */}
-                        <div>
-                            <label htmlFor="name" className={`block text-sm font-medium mb-1 ${labelColor}`}>Your Name / Company Contact</label>
-                            <input
-                                type="text"
-                                id="name"
-                                name="name"
-                                value={formState.name}
-                                onChange={handleChange}
-                                required
-                                // FIXED: Using static focusRingClass
-                                className={`w-full p-3 border rounded-lg focus:ring-2 ${focusRingClass} ${inputBorder} ${inputColor} ${isDark ? 'bg-gray-800' : 'bg-gray-50'}`}
-                                
-                                placeholder="e.g., Hiring Manager, Recruiter"
-                            />
-                        </div>
-
-                        {/* Email Field */}
-                        <div>
-                            <label htmlFor="email" className={`block text-sm font-medium mb-1 ${labelColor}`}>Your Email</label>
-                            <input
-                                type="email"
-                                id="email"
-                                name="email"
-                                value={formState.email}
-                                onChange={handleChange}
-                                required
-                                // FIXED: Using static focusRingClass
-                                className={`w-full p-3 border rounded-lg focus:ring-2 ${focusRingClass} ${inputBorder} ${inputColor} ${isDark ? 'bg-gray-800' : 'bg-gray-50'}`}
-                                
-                                placeholder="e.g., hiring.manager@company.com"
-                            />
-                        </div>
-
-                        {/* Message Field */}
-                        <div>
-                            <label htmlFor="message" className={`block text-sm font-medium mb-1 ${labelColor}`}>Message / Inquiry</label>
-                            <textarea
-                                id="message"
-                                name="message"
-                                value={formState.message}
-                                onChange={handleChange}
-                                required
-                                rows="4"
-                                // FIXED: Using static focusRingClass
-                                className={`w-full p-3 border rounded-lg focus:ring-2 ${focusRingClass} ${inputBorder} ${inputColor} ${isDark ? 'bg-gray-800' : 'bg-gray-50'}`}
-                                
-                                placeholder="Briefly describe the job opportunity, research collaboration, or specific request."
-                            ></textarea>
-                        </div>
-
-                        {/* Submit Button - Updated text for clarity */}
-                        <button
-                            type="submit"
-                            className={`w-full flex items-center justify-center space-x-2 py-3 mt-6 rounded-lg font-bold text-base transition-colors
-                                ${isDark ? 'bg-[#96a9d1] text-[#0f1624] hover:bg-white' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
-                        >
-                            <Send className="w-5 h-5" />
-                            <span>Submit Inquiry</span>
-                        </button>
-                    </form>
-                )}
-            </motion.div>
-        </div>
-    );
-};
+// REMOVED: ContactRequestForm component is no longer needed.
 
 
 export default function App() {
@@ -201,9 +55,7 @@ export default function App() {
   // State for the Contact Details dropdown
   const [openContact, setOpenContact] = useState(false);
   const [hoverContact, setHoverContact] = useState(false);
-  // 1. New State for Contact Form visibility
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  // 2. New State for Theme Management
+  // 1. New State for Theme Management
   const [theme, setTheme] = useState('dark');
   
   const toggleContact = (e) => {
@@ -211,12 +63,12 @@ export default function App() {
     setOpenContact((o) => !o);
   };
 
-  // 3. Theme Toggle Function
+  // 2. Theme Toggle Function
   const toggleTheme = () => {
       setTheme(t => (t === 'dark' ? 'light' : 'dark'));
   };
 
-  // 4. Define Theme Classes
+  // 3. Define Theme Classes
   const isDark = theme === 'dark';
   const bgClass = isDark ? 'bg-[#0f1624]' : 'bg-gray-50';
   const textClass = isDark ? 'text-gray-500' : 'text-gray-700';
@@ -245,6 +97,9 @@ export default function App() {
       </li>
   );
   
+  // NEW: Google Form URL
+  const googleFormUrl = "https://docs.google.com/forms/d/e/1FAIpQLSeLnXVe2-KP9If_PGq1NzZtK8n4VghS7uymYQ7xpH9ZPszfQA/viewform?usp=dialog";
+
   return (
     <div
       className={`min-h-screen ${bgClass} ${textClass}`} // Apply global background and default text
@@ -263,20 +118,18 @@ export default function App() {
             {/* RIGHT GROUP: Theme and Contact Details in a vertical stack, aligned right */}
             <div className="flex flex-col items-end space-y-2 mt-2 sm:mt-0">
                 
-                {/* 1. Theme Toggle (Text + Icon as a single clickable unit) - ENHANCED HOVER */}
+                {/* 1. Theme Toggle */}
                 <div
                     onClick={toggleTheme}
-                    // Apply padding, rounding, cursor, and transition to the whole element
                     className={`
                         flex items-center space-x-2 px-3 py-1 rounded-full cursor-pointer transition-colors
                         ${isDark 
-                            ? 'hover:bg-gray-700/50' // Light hover background for dark mode
-                            : 'hover:bg-gray-200/50' // Light hover background for light mode
+                            ? 'hover:bg-gray-700/50' 
+                            : 'hover:bg-gray-200/50' 
                         }
                     `}
                     aria-label={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
                 >
-                    {/* Theme Label: Color changes on hover */}
                     <span className={`text-base font-semibold transition-colors
                         ${isDark 
                             ? 'text-[#96a9d1] hover:text-[#cdd9f0]' 
@@ -286,7 +139,6 @@ export default function App() {
                         Theme
                     </span>
                     
-                    {/* Icon: Color is static but container background changes */}
                     <span className={`transition-colors
                         ${isDark ? 'text-white' : 'text-gray-900'}`
                     }>
@@ -312,12 +164,11 @@ export default function App() {
                         Contact Details
                     </motion.span>
 
-                    {/* User Icon with Dropdown - FIX APPLIED HERE */}
+                    {/* User Icon with Dropdown */}
                     <div className="relative">
                         <motion.span
                             onClick={toggleContact}
                             animate={{
-                                // Use explicit hex values for smooth animation, ensuring dark color in light mode
                                 color: hoverContact || openContact ? iconColorActive : iconColorDefault,
                             }}
                             transition={{ duration: 0.22 }}
@@ -333,7 +184,7 @@ export default function App() {
                             <User className="w-5 h-5" /> 
                         </motion.span>
 
-                        {/* Contact dropdown anchored under the gear/text group */}
+                        {/* Contact dropdown content */}
                         <motion.div
                             initial={{ height: 0, opacity: 0, y: -6 }}
                             animate={{
@@ -362,22 +213,26 @@ export default function App() {
                                     <span className={secondaryColor}>Co. Kilkenny</span>
                                 </li>
                                 
-                                {/* For professional inquiries: - Adjusted pt-3 to pt-2 to reduce vertical gap */}
+                                {/* For professional inquiries: */}
                                 <li className="p-1 pt-2 text-sm">
                                     For professional inquiries:
                                 </li>
 
-                                {/* Contact Form Button - Adjusted pt-1 removed */}
+                                {/* CONTACT FORM LINK - CHANGED TO ANCHOR TAG */}
                                 <li className="p-1">
-                                    <button
-                                        onClick={() => { setOpenContact(false); setIsFormOpen(true); }}
-                                        className={`w-full text-center py-2 px-3 rounded-lg font-bold text-sm transition-colors shadow-md
+                                    <a
+                                        href={googleFormUrl}
+                                        target="_blank" // Opens in a new tab
+                                        rel="noopener noreferrer"
+                                        onClick={() => setOpenContact(false)} // Close dropdown on click
+                                        className={`w-full flex items-center justify-center space-x-1 py-2 px-3 rounded-lg font-bold text-sm transition-colors shadow-md
                                             ${isDark ? 'bg-[#96a9d1] text-[#0f1624] hover:bg-white' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
                                     >
-                                        Contact Form (Optional)
-                                    </button>
+                                        <span>Inquiry Form</span>
+                                        <ExternalLink className="w-4 h-4" />
+                                    </a>
                                 </li>
-                                {/* END BUTTON */}
+                                {/* END ANCHOR TAG */}
                                 
                             </ul>
                         </motion.div>
@@ -565,20 +420,7 @@ export default function App() {
       </div>
       {/* --- MAIN CV GRID LAYOUT END --- */}
 
-      {/* --- CONTACT REQUEST FORM MODAL --- */}
-      <AnimatePresence>
-          {isFormOpen && (
-              <ContactRequestForm
-                  onClose={() => setIsFormOpen(false)}
-                  theme={theme}
-                  isDark={isDark}
-                  primaryColor={primaryColor}
-                  secondaryColor={secondaryColor}
-                  borderClass={borderClass}
-              />
-          )}
-      </AnimatePresence>
-      {/* --- END MODAL --- */}
+      {/* REMOVED: AnimatePresence block for the modal is no longer needed. */}
     </div>
   );
 }
